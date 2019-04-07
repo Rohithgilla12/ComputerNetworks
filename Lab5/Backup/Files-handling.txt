@@ -1,0 +1,25 @@
+Topics: files, directories, pipes, fork and inter-process communication 
+
+Useful file system calls:
+
+FILE *fopen(const char *path, const char *mode);
+
+mode: 
+"r" (read), 
+"r+" (read+write), 
+"w" (truncate file to zero or create text file)
+"w+": (read+write)
+'a': (append)
+'a+':(reading+appending)
+
+
+size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream);
+
+fread(buff, SIZE, NUMELEM, fd)
+
+ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream);
+
+ fwrite(buff,SIZE, strlen(buff),fd)
+
+int fseek(FILE *stream, long offset, int whence);
+fseek(fd,11,SEEK_CUR)

@@ -1,0 +1,30 @@
+{
+    "files.associations": {
+        "inet.h": "c"
+    },
+    "cSpell.enabledLanguageIds": [
+        "asciidoc",
+        "cpp",
+        "csharp",
+        "css",
+        "go",
+        "handlebars",
+        "html",
+        "jade",
+        "javascript",
+        "javascriptreact",
+        "json",
+        "latex",
+        "less",
+        "markdown",
+        "php",
+        "plaintext",
+        "pub",
+        "restructuredtext",
+        "rust",
+        "text",
+        "typescript",
+        "typescriptreact",
+        "yml"
+    ]
+}

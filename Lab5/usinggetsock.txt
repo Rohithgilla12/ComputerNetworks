@@ -1,0 +1,32 @@
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdio.h>
+
+f()
+{
+   int s;
+   struct sockaddr_in sa;
+   int sa_len;
+   .
+   .
+   .
+      /* We must put the length in a variable.              */
+   sa_len = sizeof(sa);
+      /* Ask getsockname to fill in this socket's local     */
+      /* address.                                           */
+   if (getsockname(s, &sa, &sa_len) == -1) {
+      perror("getsockname() failed");
+      return -1;
+   }
+
+      /* Print it. The IP address is often zero beacuase    */
+      /* sockets are seldom bound to a specific local       */
+      /* interface.                                         */
+   printf("Local IP address is: %s\n", inet_ntoa(sa.sin_add r));
+   printf("Local port is: %d\n", (int) ntohs(sa.sin_port));
+   .
+   .
+   .
+}
