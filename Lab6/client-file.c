@@ -15,12 +15,9 @@ int main(int argc, char **argv)
 	char recvline[1024];
 	struct sockaddr_in servaddr;
 	socklen_t consize = sizeof(servaddr);
-	/*int createdfile=creat("newfile", S_IRWXU);*/
-
 	int fildes = open(argv[2], O_RDONLY);
-
 	char readbuff[1024];
-
+	
 	if (argc != 3)
 	{
 		printf("usage: a.out <IPaddress> <filename>");

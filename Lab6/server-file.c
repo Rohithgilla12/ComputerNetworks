@@ -9,7 +9,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-
 int main(int argc, char **argv)
 {
 	int listenfd, connfd;
@@ -44,7 +43,7 @@ int main(int argc, char **argv)
 		{
 			exit(1);
 		}
-		fileIndex +=1;
+		fileIndex += 1;
 		printf("Connection Received\n");
 		pid_t childpid;
 		if ((childpid = fork()) == 0)
@@ -57,13 +56,12 @@ int main(int argc, char **argv)
 			{
 				write(createdfile, readbuff, bval);
 			}
-			close(connfd);
 			close(createdfile);
-			perror("Done with file upload \n");
+			close(connfd);					
 		}
-		else if(childpid == -1)
+		else if (childpid == -1)
 		{
-			close(connfd);
+			// close(connfd);
 			continue;
 		}
 	}

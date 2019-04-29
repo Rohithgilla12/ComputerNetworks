@@ -10,28 +10,42 @@
 #include<fcntl.h>
 #include<pthread.h>
 
+
+pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 struct arg{
-	int confd;
-	int fileno;
+	int connfd;
+	int client_num;
 };
 
-void *threadSendFunction(void *argument){
-	struct arg fdd=*(struct arg *)argument;
-	int cfdd=fdd.confd;
-	int none=fdd.fileno;
-	int fino= rand() % 100000 + 1;;
+void *sock_thread(void *arg){
+	pthread_mutex_lock(&lock);
+	struct arg given_arg=*(struct arg *)arg;
+	int conn_fd=given_arg.connfd;
+	int latestClient=given_arg.client_num;	
 	char readbuff[1024];
-	fino += 1;
+
 	char fileName[100];
-	sprintf(fileName, "Client%d", fino);
+    char clientFileName[1000];
+    char numberString[100];	
+	int fino= rand() % 1000000 + 1;
+
+    printf("Thread created");
+    sprintf(numberString, "%d", latestClient);
+    sprintf(clientFileName, "%s", "Client");
+    strcat(clientFileName, numberString);
+	printf("cl_no=%s \n", clientFileName);
+	sprintf(clientFileName,"clientFile_%d",fino);		
+
+    int created_new_file = creat(clientFileName, S_IRWXU);
+	
 	int bval;
-	int createdfile=creat(fileName, S_IRWXU);
-	while ((bval = read(cfdd, readbuff, 1024)) > 0)
+	while ((bval = read(conn_fd, readbuff, 1024)) > 0)
 	{
-		write(createdfile, readbuff, bval);
-		printf("%s",readbuff);
+		write(created_new_file, readbuff, bval);
+		//printf("%s",readbuff);
 	}
-	close(createdfile);
+	close(created_new_file);
+	pthread_mutex_unlock(&lock);
 	return NULL;
 }
 
@@ -43,35 +57,43 @@ main(int argc, char **argv)
 	char				buff[1024];
 	struct sockaddr_in cliaddr;	
 	socklen_t consize=sizeof(servaddr);	
-	int fildes; 
-	pthread_t thid[10];
-	char readbuff[1024];
-	struct arg inst;
 	
-
+	pthread_t thid[200];
+	char readbuff[1024];
+	struct arg example;
+	
 	char readbuff1[1024];
-    listenfd = socket(AF_INET, SOCK_STREAM, 0);
+	
+	listenfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family      = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	servaddr.sin_port        = htons(6789);	/* change this */
+	servaddr.sin_port        = htons(6789);	
+
 	int bval;
 	bind(listenfd, (struct sockaddr *) &servaddr, sizeof(servaddr));
-	int createdfile=0;
+
+	int new_file=0;
+
 	listen(listenfd, 5);
-	char a[10]="client_";
-    int y=0;
-	char *token;
+	
+    int cl_no=0;
+
 	char copy[1024];
 	int i=0;
 	for ( ; ; ) {
-        connfd = accept(listenfd, (struct sockaddr *)&cliaddr, &consize);		
+        
+		connfd = accept(listenfd, (struct sockaddr *)&cliaddr, &consize);
 		i=i+1;
-		y = y+1;
-		inst.confd=connfd;
-		inst.fileno=y;
-		pthread_create(&thid[i],NULL,threadSendFunction,&inst);			
+		cl_no = cl_no+1;
+		example.connfd=connfd;
+		example.client_num=cl_no;
+		if (pthread_create(&thid[i],NULL,sock_thread,&example) !=0)
+		{
+			printf("thread creation problem");
+		}
+		 
 	}
 	close(connfd);
 	close(listenfd);
